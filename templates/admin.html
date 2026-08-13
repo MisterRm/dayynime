@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – Dayynime{% endblock %}
+
+{% block head %}
+<style>
+:root {
+  --adm-bg: #0a0a0f;
+  --adm-card: #13131c;
+  --adm-border: rgba(255,102,0,0.15);
+  --adm-accent: #ff6600;
+  --adm-accent2: #ff9933;
+  --adm-green: #22c55e;
+  --adm-red: #ef4444;
+  --adm-text: #e2e2e2;
+  --adm-muted: #555;
+}
+body { background: var(--adm-bg) !important; }
+#adm-wrap { max-width: 800px; margin: 0 auto; padding: 20px 14px 100px; font-family: 'Poppins', sans-serif; }
+.adm-center { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; font-family: 'Poppins', sans-serif; }
+.adm-box { text-align: center; max-width: 340px; }
+.adm-icon-circle { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,102,0,0.12); border: 1px solid rgba(255,102,0,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; }
+.adm-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.adm-sub { font-size: 13px; color: #666; margin-bottom: 28px; line-height: 1.6; }
+.adm-btn-login { display: inline-flex; align-items: center; gap: 10px; background: #ff6600; color: #fff; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Poppins', sans-serif; transition: background 0.2s; text-decoration: none; }
+.adm-btn-login:hover { background: #e55a00; }
+.adm-back { color: #ff6600; font-size: 13px; font-weight: 600; text-decoration: none; }
+.adm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 12px; }
+.adm-header h1 { font-size: 20px; font-weight: 800; color: #fff; margin: 0; display: flex; align-items: center; gap: 10px; }
+.adm-header h1 .badge { font-size: 10px; font-weight: 700; background: var(--adm-accent); color: #000; padding: 3px 8px; border-radius: 4px; letter-spacing: 1px; text-transform: uppercase; }
+.adm-refresh-btn { background: rgba(255,102,0,0.12); border: 1px solid var(--adm-border); color: var(--adm-accent); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 7px; font-family: 'Poppins', sans-serif; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--adm-green); display: inline-block; animation: pulse-dot 1.6s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)} }
+.adm-updated { font-size: 11px; color: var(--adm-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+.adm-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.adm-stat { background: var(--adm-card); border: 1px solid var(--adm-border); border-radius: 14px; padding: 18px 16px 16px; }
+.adm-stat-icon { font-size: 22px; margin-bottom: 10px; }
+.adm-stat-val { font-size: 30px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 4px; letter-spacing: -1px; }
+.adm-stat-label { font-size: 11px; font-weight: 600; color: var(--adm-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.adm-menu-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--adm-muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.adm-menu-title::after { content: ''; flex: 1; height: 1px; background: var(--adm-border); }
+.adm-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+.adm-menu-card { display: flex; align-items: center; gap: 12px; background: var(--adm-card); border: 1px solid var(--adm-border); border-radius: 14px; padding: 14px 12px; text-decoration: none; transition: border-color 0.2s, background 0.2s; }
+.adm-menu-card:hover { border-color: var(--adm-accent); background: rgba(255,102,0,0.05); }
+.adm-menu-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.adm-menu-info { min-width: 0; flex: 1; }
+.adm-menu-name { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+.adm-menu-desc { font-size: 10px; color: var(--adm-muted); line-height: 1.3; }
+.adm-menu-arrow { margin-left: auto; color: var(--adm-muted); font-size: 11px; flex-shrink: 0; }
+.adm-section-title { font-size: 12px; font-weight: 700; color: var(--adm-muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.adm-section-title::after { content: ''; flex: 1; height: 1px; background: var(--adm-border); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fa-spin { animation: spin 0.8s linear infinite; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% if show_login %}
+<div class="adm-center">
+  <div class="adm-box">
+    <div class="adm-icon-circle">🔐</div>
+    <div class="adm-title">Login Admin</div>
+    <div class="adm-sub">Masuk menggunakan token admin untuk mengakses dashboard.</div>
+    <a href="/auth/login" class="adm-btn-login"><i class="fas fa-shield-alt"></i> Login Admin</a>
+  </div>
+</div>
+
+{% elif not_admin %}
+<div class="adm-center">
+  <div class="adm-box">
+    <div style="font-size:48px;margin-bottom:16px;">🚫</div>
+    <div class="adm-title" style="color:#ef4444;">Akses Ditolak</div>
+    <div class="adm-sub">Akunmu tidak terdaftar sebagai admin.</div>
+    <a href="/home" class="adm-back">← Kembali ke Home</a>
+  </div>
+</div>
+
+{% else %}
+<div id="adm-wrap">
+
+  <div class="adm-header">
+    <h1><span class="live-dot"></span> Dashboard Admin <span class="badge">Live</span></h1>
+    <button class="adm-refresh-btn" onclick="loadStats()">
+      <i class="fas fa-sync-alt" id="refresh-icon"></i> Refresh
+    </button>
+  </div>
+  <div class="adm-updated" id="adm-updated"><i class="far fa-clock"></i> <span>Memuat data…</span></div>
+
+  <div class="adm-stats">
+    <div class="adm-stat"><div class="adm-stat-icon">🟢</div><div class="adm-stat-val" id="stat-active">–</div><div class="adm-stat-label">Aktif Sekarang</div></div>
+    <div class="adm-stat"><div class="adm-stat-icon">👁️</div><div class="adm-stat-val" id="stat-guests">–</div><div class="adm-stat-label">Guest / Anonim</div></div>
+    <div class="adm-stat"><div class="adm-stat-icon">👤</div><div class="adm-stat-val" id="stat-logged">–</div><div class="adm-stat-label">User Login</div></div>
+    <div class="adm-stat"><div class="adm-stat-icon">⭐</div><div class="adm-stat-val" id="stat-premium">–</div><div class="adm-stat-label">User Premium</div></div>
+    <div class="adm-stat"><div class="adm-stat-icon">💬</div><div class="adm-stat-val" id="stat-comments">–</div><div class="adm-stat-label">Komentar Total</div></div>
+    <div class="adm-stat"><div class="adm-stat-icon">🎌</div><div class="adm-stat-val" id="stat-members">–</div><div class="adm-stat-label">Total Member</div></div>
+  </div>
+
+  <!-- ── NAVIGATION MENU ── -->
+  <div class="adm-menu-title">Menu Admin</div>
+  <div class="adm-menu-grid">
+
+    <a href="/users-admin" class="adm-menu-card">
+      <div class="adm-menu-icon" style="background:rgba(34,197,94,0.12);">
+        <i class="fas fa-users" style="color:#22c55e;"></i>
+      </div>
+      <div class="adm-menu-info">
+        <div class="adm-menu-name">Users</div>
+        <div class="adm-menu-desc">Aktif, premium & terpopuler</div>
+      </div>
+      <i class="fas fa-chevron-right adm-menu-arrow"></i>
+    </a>
+
+    <a href="/analytics-admin" class="adm-menu-card">
+      <div class="adm-menu-icon" style="background:rgba(52,211,153,0.12);">
+        <i class="fas fa-chart-bar" style="color:#34d399;"></i>
+      </div>
+      <div class="adm-menu-info">
+        <div class="adm-menu-name">Analytics</div>
+        <div class="adm-menu-desc">Watch history & top anime</div>
+      </div>
+      <i class="fas fa-chevron-right adm-menu-arrow"></i>
+    </a>
+
+    <a href="/voucher-admin" class="adm-menu-card">
+      <div class="adm-menu-icon" style="background:rgba(244,117,33,0.12);">
+        <i class="fas fa-ticket-alt" style="color:#f47521;"></i>
+      </div>
+      <div class="adm-menu-info">
+        <div class="adm-menu-name">Voucher</div>
+        <div class="adm-menu-desc">Generate & kelola kode</div>
+      </div>
+      <i class="fas fa-chevron-right adm-menu-arrow"></i>
+    </a>
+
+    <a href="#locked-section" class="adm-menu-card" onclick="document.getElementById('locked-section').scrollIntoView({behavior:'smooth'});return false;">
+      <div class="adm-menu-icon" style="background:rgba(239,68,68,0.12);">
+        <i class="fas fa-lock" style="color:#ef4444;"></i>
+      </div>
+      <div class="adm-menu-info">
+        <div class="adm-menu-name">Locked Anime</div>
+        <div class="adm-menu-desc">Kunci akses anime premium</div>
+      </div>
+      <i class="fas fa-chevron-right adm-menu-arrow"></i>
+    </a>
+
+  </div>
+
+  <!-- ── LOCKED ANIME ── -->
+  <div id="locked-section">
+    <div class="adm-section-title">
+      <i class="fas fa-lock" style="color:#ef4444;font-size:11px;"></i> Kelola Anime Terkunci
+    </div>
+    <div style="background:var(--adm-card);border:1px solid var(--adm-border);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+      <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:10px;color:var(--adm-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">Kunci Anime</div>
+        <div style="display:flex;gap:8px;">
+          <input id="lockSlugInput" type="text" placeholder="Masukkan slug anime (contoh: one-piece)"
+            style="flex:1;background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#fff;font-size:12px;font-family:inherit;outline:none;">
+          <button onclick="lockAnime()"
+            style="background:#f47521;border:none;border-radius:8px;color:#fff;font-weight:900;font-size:12px;padding:10px 16px;cursor:pointer;white-space:nowrap;font-family:inherit;">
+            <i class="fas fa-lock"></i> Kunci
+          </button>
+        </div>
+        <div id="lockMsg" style="font-size:11px;margin-top:6px;min-height:16px;"></div>
+      </div>
+      <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Daftar Terkunci</span>
+          <span id="lock-count" style="background:rgba(244,117,33,0.15);color:#f47521;font-size:10px;font-weight:900;padding:2px 8px;border-radius:20px;">0</span>
+        </div>
+        <button onclick="loadLockedList()" style="background:none;border:none;color:#666;font-size:12px;cursor:pointer;font-family:inherit;">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      <div id="locked-list">
+        <div style="text-align:center;padding:24px;color:#555;font-size:12px;"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+async function loadStats() {
+  var icon = document.getElementById('refresh-icon');
+  if (icon) icon.style.animation = 'fa-spin 0.6s linear infinite';
+  try {
+    var res = await fetch('/api/admin/stats');
+    var data = await res.json();
+    var s = data.stats || {};
+    setText('stat-active',   s.active_total  != null ? s.active_total  : '–');
+    setText('stat-guests',   s.active_guests != null ? s.active_guests : '–');
+    setText('stat-logged',   s.active_logged != null ? s.active_logged : '–');
+    setText('stat-premium',  s.premium_count != null ? s.premium_count : '–');
+    setText('stat-comments', s.comment_count != null ? s.comment_count : '–');
+    setText('stat-members',  s.member_count  != null ? s.member_count  : '–');
+    var now = new Date();
+    document.getElementById('adm-updated').innerHTML = '<i class="far fa-clock"></i> Update: ' + now.toLocaleTimeString('id-ID');
+  } catch(e) { console.error(e); }
+  finally { if (icon) icon.style.animation = ''; }
+}
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+loadStats();
+setInterval(loadStats, 30000);
+
+async function loadLockedList() {
+  var wrap = document.getElementById('locked-list');
+  var countEl = document.getElementById('lock-count');
+  try {
+    var r = await fetch('/api/admin/locked-anime/list');
+    var d = await r.json();
+    var list = d.data || [];
+    countEl.textContent = list.length;
+    if (!list.length) {
+      wrap.innerHTML = '<div style="text-align:center;padding:24px;color:#555;font-size:12px;"><i class="fas fa-unlock"></i> Belum ada anime yang dikunci.</div>';
+      return;
+    }
+    wrap.innerHTML = list.map(function(a) {
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        + (a.poster ? '<img src="'+esc(a.poster)+'" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;">'
+          : '<div style="width:36px;height:36px;border-radius:6px;background:#1a1a23;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="fas fa-film" style="color:#555;font-size:12px;"></i></div>')
+        + '<div style="flex:1;min-width:0;">'
+        +   '<div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(a.title||a.slug)+'</div>'
+        +   '<div style="font-size:10px;color:#555;margin-top:1px;font-family:monospace;">'+esc(a.slug)+'</div>'
+        + '</div>'
+        + '<button onclick="unlockAnime(\''+esc(a.slug)+'\')" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#ef4444;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:inherit;white-space:nowrap;">'
+        +   '<i class="fas fa-unlock"></i> Buka</button></div>';
+    }).join('');
+  } catch(e) {
+    wrap.innerHTML = '<div style="text-align:center;padding:24px;color:#ef4444;font-size:12px;">Gagal memuat data.</div>';
+  }
+}
+
+async function lockAnime() {
+  var slugInput = document.getElementById('lockSlugInput');
+  var msg = document.getElementById('lockMsg');
+  var slug = slugInput.value.trim();
+  if (!slug) { msg.style.color='#ef4444'; msg.textContent='Slug tidak boleh kosong.'; return; }
+  msg.style.color='#888'; msg.textContent='Mengunci...';
+  try {
+    var r = await fetch('/api/admin/locked-anime/lock', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({slug: slug})
+    });
+    var d = await r.json();
+    if (d.ok) {
+      msg.style.color='#10B981'; msg.textContent='✓ Anime berhasil dikunci!';
+      slugInput.value = '';
+      setTimeout(function(){ msg.textContent=''; }, 3000);
+      loadLockedList();
+    } else { msg.style.color='#ef4444'; msg.textContent='Gagal: '+(d.error||'unknown'); }
+  } catch(e) { msg.style.color='#ef4444'; msg.textContent='Error: '+e.message; }
+}
+
+async function unlockAnime(slug) {
+  if (!confirm('Buka kunci anime: '+slug+'?')) return;
+  try {
+    var r = await fetch('/api/admin/locked-anime/unlock', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({slug: slug})
+    });
+    var d = await r.json();
+    if (d.ok) loadLockedList();
+    else alert('Gagal buka kunci: '+(d.error||'unknown'));
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+document.addEventListener('DOMContentLoaded', loadLockedList);
+</script>
+{% endif %}
+
+{% endblock %}
