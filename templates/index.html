@@ -344,7 +344,6 @@ function switchSource(src, el) {
           <div class="idx-card-btitle">{{ anime.title }}</div>
           <div class="idx-card-eps"><i class="fas fa-play-circle" style="font-size:9px;"></i> {% if anime.episode %}Ep {{ anime.episode }}{% else %}{{ anime.type or 'Anime' }}{% endif %}</div>
         </div>
-        <div class="acard-viewers" id="viewers-{{ anime.slug }}"><span class="acard-viewers-dot"></span><span class="acard-viewers-count" id="viewers-count-{{ anime.slug }}">0</span><span>nonton</span></div>
       </div>
     </a>
     {% endfor %}
@@ -723,11 +722,6 @@ function switchSource(src, el) {
   }).catch(function(){});
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-(function(){var SUPABASE_URL='https://mafnnqttvkdgqqxczqyt.supabase.co';var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZm5ucXR0dmtkZ3FxeGN6cXl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NzQyMDEsImV4cCI6MjA4NzQ1MDIwMX0.YRh1oWVKnn4tyQNRbcPhlSyvr7V_1LseWN7VjcImb-Y';var client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);var slugs=[];document.querySelectorAll('.idx-card[data-anime-slug]').forEach(function(el){var s=el.getAttribute('data-anime-slug');if(s&&slugs.indexOf(s)===-1)slugs.push(s);});var uid=sessionStorage.getItem('dyn_uid');if(!uid){uid='u_'+Math.random().toString(36).substr(2,9)+'_'+Date.now();sessionStorage.setItem('dyn_uid',uid);}var channels={};function updateBadge(slug,count){var badge=document.getElementById('viewers-'+slug);var countEl=document.getElementById('viewers-count-'+slug);if(!badge||!countEl)return;if(count>=1){countEl.textContent=count;badge.classList.add('visible');}else{badge.classList.remove('visible');}}function subscribeToSlug(slug){if(channels[slug])return;var ch=client.channel('anime-viewers:'+slug,{config:{presence:{key:uid}}});ch.on('presence',{event:'sync'},function(){updateBadge(slug,Object.keys(ch.presenceState()).length);});ch.subscribe();channels[slug]=ch;}slugs.forEach(subscribeToSlug);window.addEventListener('beforeunload',function(){Object.values(channels).forEach(function(ch){try{client.removeChannel(ch);}catch(e){}});});})();
-</script>
-
 <!-- ══════════════════════════════════════════════════════════
      SURVEY POPUP — "Gimana Dayynime?"
      ══════════════════════════════════════════════════════════ -->

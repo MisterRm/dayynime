@@ -11,8 +11,6 @@
   var unread      = 0;
   var messages    = [];        // buffer max 80 pesan
   var channel     = null;
-  var presenceCh  = null;
-  var onlineCount = 0;
   var ROOM_ID     = window.CHAT_ROOM_ID || 'global';
   var ME          = window.CHAT_USER    || null;  // { id, name, avatar }
   var client      = null;
@@ -23,7 +21,6 @@
     client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     buildUI();
     subscribeChat();
-    subscribePresence();
   }
 
   // ── Build UI ──────────────────────────────────────
@@ -43,8 +40,7 @@
       '<div class="chat-head">' +
         '<div class="chat-head-left">' +
           '<span class="chat-head-dot"></span>' +
-          '<div><div class="chat-head-title">Live Chat</div>' +
-          '<div class="chat-head-sub" id="chatOnlineLabel">Menghubungkan...</div></div>' +
+          '<div><div class="chat-head-title">Live Chat</div></div>' +
         '</div>' +
         '<button class="chat-head-close" onclick="window._chatToggle()"><i class="fas fa-times"></i></button>' +
       '</div>' +
@@ -123,36 +119,6 @@
         pushMessage(msg, false);
       })
       .subscribe();
-  }
-
-  // ── Subscribe Presence (online count) ─────────────
-  function subscribePresence() {
-    var uid = sessionStorage.getItem('dyn_uid') ||
-              ('u_' + Math.random().toString(36).substr(2, 9));
-    sessionStorage.setItem('dyn_uid', uid);
-
-    presenceCh = client.channel('chat-presence:' + ROOM_ID, {
-      config: { presence: { key: uid } }
-    });
-    presenceCh
-      .on('presence', { event: 'sync' }, function () {
-        onlineCount = Object.keys(presenceCh.presenceState()).length;
-        updateOnlineLabel();
-      })
-      .subscribe(function (status) {
-        if (status === 'SUBSCRIBED') {
-          presenceCh.track({ uid: uid, at: Date.now() });
-          updateOnlineLabel();
-        }
-      });
-  }
-
-  function updateOnlineLabel() {
-    var el = document.getElementById('chatOnlineLabel');
-    if (!el) return;
-    el.textContent = onlineCount > 0
-      ? onlineCount + ' online'
-      : 'Terhubung';
   }
 
   // ── Send ──────────────────────────────────────────
@@ -270,7 +236,6 @@
   // ── Cleanup ───────────────────────────────────────
   window.addEventListener('beforeunload', function () {
     try {
-      if (presenceCh) { presenceCh.untrack(); client.removeChannel(presenceCh); }
       if (channel) client.removeChannel(channel);
     } catch (e) {}
   });

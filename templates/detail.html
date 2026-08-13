@@ -164,14 +164,6 @@
   </div>
 </div>
 
-<!-- Live viewers -->
-<div id="detailViewerBar" class="live-viewer-bar">
-  <span class="live-viewer-bar-dot"></span>
-  <span id="detailViewerCount">0</span>
-  <span>orang lagi nonton ini</span>
-</div>
-
-
 <!-- Tabs -->
 <div class="det-tabs">
   <button class="det-tab active" data-tab="about" onclick="switchTab('about',this)">About</button>
@@ -366,26 +358,6 @@ function showToast(msg){
 document.addEventListener('DOMContentLoaded',function(){updateBookmarkUI();});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-(function(){
-  var SUPABASE_URL='https://mafnnqttvkdgqqxczqyt.supabase.co';
-  var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZm5ucXR0dmtkZ3FxeGN6cXl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NzQyMDEsImV4cCI6MjA4NzQ1MDIwMX0.YRh1oWVKnn4tyQNRbcPhlSyvr7V_1LseWN7VjcImb-Y';
-  var animeSlug='{{ data.detail.slug if data and data.detail else "" }}';
-  if(!animeSlug)return;
-  var client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  var uid=sessionStorage.getItem('dyn_uid');
-  if(!uid){uid='u_'+Math.random().toString(36).substr(2,9)+'_'+Date.now();sessionStorage.setItem('dyn_uid',uid);}
-  var channel=client.channel('anime-viewers:'+animeSlug,{config:{presence:{key:uid}}});
-  channel.on('presence',{event:'sync'},function(){
-    var count=Object.keys(channel.presenceState()).length;
-    var bar=document.getElementById('detailViewerBar'),cntEl=document.getElementById('detailViewerCount');
-    if(!bar||!cntEl)return;
-    if(count>=1){cntEl.textContent=count;bar.style.display='inline-flex';}else{bar.style.display='none';}
-  });
-  channel.subscribe(function(status){if(status==='SUBSCRIBED'){channel.track({page:'detail',slug:animeSlug,at:Date.now()});}});
-  window.addEventListener('beforeunload',function(){try{channel.untrack();client.removeChannel(channel);}catch(e){}});
-})();
-</script>
 <script>
 window.CHAT_ROOM_ID='anime-{{ slug }}';
 {% if session.get('user') %}

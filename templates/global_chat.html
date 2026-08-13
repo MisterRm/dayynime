@@ -10,13 +10,6 @@
       <div class="gc-header-icon"><i class="fas fa-comments"></i></div>
       <div>
         <div class="gc-header-title">Ruang Ngobrol</div>
-        <div class="gc-header-sub" id="gcOnlineLabel">Menghubungkan...</div>
-      </div>
-    </div>
-    <div class="gc-header-right">
-      <div class="gc-online-badge" id="gcOnlineBadge">
-        <span class="gc-online-dot"></span>
-        <span id="gcOnlineCount">0</span> online
       </div>
     </div>
   </div>
@@ -87,8 +80,6 @@
 
   var client       = null;
   var channel      = null;
-  var presenceCh   = null;
-  var onlineCount  = 0;
   var oldestId     = null;   // untuk load more
   var hasMore      = true;
   var sending      = false;
@@ -104,7 +95,6 @@
     client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     loadHistory(true);
     subscribeRealtime();
-    subscribePresence();
     initInput();
   }
 
@@ -171,35 +161,6 @@
         scrollBottom();
       })
       .subscribe();
-  }
-
-  /* ── Presence (online count) ─────────────────────── */
-  function subscribePresence() {
-    var uid = sessionStorage.getItem('dyn_uid') ||
-              ('u_' + Math.random().toString(36).substr(2, 9));
-    sessionStorage.setItem('dyn_uid', uid);
-
-    presenceCh = client.channel('gc-presence', {
-      config: { presence: { key: uid } }
-    });
-    presenceCh
-      .on('presence', { event: 'sync' }, function() {
-        onlineCount = Object.keys(presenceCh.presenceState()).length;
-        updateOnline();
-      })
-      .subscribe(function(status) {
-        if (status === 'SUBSCRIBED') {
-          presenceCh.track({ uid: uid, at: Date.now() });
-          updateOnline();
-        }
-      });
-  }
-
-  function updateOnline() {
-    var label = document.getElementById('gcOnlineLabel');
-    var count = document.getElementById('gcOnlineCount');
-    if (label) label.textContent = onlineCount > 0 ? onlineCount + ' orang online' : 'Terhubung';
-    if (count) count.textContent = onlineCount;
   }
 
   /* ── Render pesan ────────────────────────────────── */
@@ -403,7 +364,6 @@
   /* ── Cleanup ─────────────────────────────────────── */
   window.addEventListener('beforeunload', function() {
     try {
-      if (presenceCh) { presenceCh.untrack(); client.removeChannel(presenceCh); }
       if (channel) client.removeChannel(channel);
     } catch(e) {}
   });
